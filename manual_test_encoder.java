@@ -18,10 +18,14 @@ public class manual_test_encoder extends LinearOpMode {
     //x value of right stick on gamepad1
     boolean a;
     boolean b;
+
+    boolean up;
     DcMotor frontLeft;
     DcMotor frontRight;
     DcMotor backLeft;
     DcMotor backRight;
+
+    DcMotor lift;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -32,15 +36,18 @@ public class manual_test_encoder extends LinearOpMode {
         frontRight = hardwareMap.get(DcMotor.class, "Fr_motor");
         backLeft = hardwareMap.get(DcMotor.class, "Bl_motor");
         backRight = hardwareMap.get(DcMotor.class, "Br_motor");
+        lift = hardwareMap.get(DcMotor.class, "lift");
 
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
         while(opModeIsActive()){
@@ -49,57 +56,67 @@ public class manual_test_encoder extends LinearOpMode {
             x = gamepad1.x;
             a = gamepad1.a;
             b = gamepad1.b;
+            up = gamepad1.dpad_up;
 
             //Move robot based on mathematical function which is based on input
             if(y){
-                Movement(384,0,0,0,5,0.5);
+                Movement(384,0,0,0,0,5,0.5);
             }
             if(x){
-                Movement(0,384,0,0,5,0.5);
+                Movement(0,384,0,0,0,5,0.5);
             }
             if(a){
-                Movement(0,0,384,0,5,0.5);
+                Movement(0,0,384,0,0,5,0.5);
             }
             if(b){
-                Movement(0,0,0,384,5,0.5);
+                Movement(0,0,0,384,0,5,0.5);
+            }
+            if(up){
+                Movement(0,0,0,0,-384,5,0.5);
             }
         }
     }
-    void Movement(float fL, float fR, float bL, float bR, int timeoutS, double speed) {
+    void Movement(float fL, float fR, float bL, float bR, float l, int timeoutS, double speed) {
         int ntfl;
         int ntfr;
         int ntbl;
         int ntbr;
+        int ntl;
+
 
         if(opModeIsActive()){
             ntfl = frontLeft.getCurrentPosition() + round(fL);
             ntfr = frontRight.getCurrentPosition() + round(fR);
             ntbl = backLeft.getCurrentPosition() + round(bL);
             ntbr = backRight.getCurrentPosition() + round(bR);
+            ntl = lift.getCurrentPosition() + round(l);
             frontLeft.setTargetPosition(ntfl);
             frontRight.setTargetPosition(ntfr);
             backLeft.setTargetPosition(ntbl);
             backRight.setTargetPosition(ntbr);
+            lift.setTargetPosition(ntl);
             frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frontLeft.setPower(speed);
             frontRight.setPower(speed);
             backLeft.setPower(speed);
             backRight.setPower(speed);
+            lift.setPower(speed);
 
             runtime.reset();
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
                     ((frontLeft.isBusy() || frontRight.isBusy() ||
-                            backLeft.isBusy() || backRight.isBusy()))) {
+                            backLeft.isBusy() || backRight.isBusy() || lift.isBusy()))) {
 
                 // Display it for the driver.
-                telemetry.addData("Goal",  "Running to %7d :%7d :%7d :%7d", ntfl,  ntfr, ntbl, ntbr);
-                telemetry.addData("Actual distance moved",  "Running at %7d :%7d :%7d :%7d",
+                telemetry.addData("Goal",  "Running to %7d :%7d :%7d :%7d :%7d", ntfl,  ntfr, ntbl, ntbr, ntl);
+                telemetry.addData("Actual distance moved",  "Running at %7d :%7d :%7d :%7d :%7d",
                         frontLeft.getCurrentPosition(),
-                        frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition());
+                        frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition(), lift.getCurrentPosition());
                 telemetry.addData("Speed", speed);
                 telemetry.update();
             }
@@ -109,10 +126,12 @@ public class manual_test_encoder extends LinearOpMode {
             frontRight.setPower(0);
             backLeft.setPower(0);
             backRight.setPower(0);
+            lift.setPower(0);
             frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
 }

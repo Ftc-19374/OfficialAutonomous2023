@@ -125,13 +125,13 @@ public class placepixelonbackdrop extends LinearOpMode{
         initAprilTag();
 
         if (opModeIsActive()) {
-            Movement(0.75f, 0.75f, 0.75f, 0.75f, 0,5, 0.5);
-            Movement(-1.134464f, 1.134464f, -1.134464f, 1.134464f, 0,5, 0.5);
-            Movement(0.75f, 0.75f, 0.75f, 0.75f,  0,5, 0.5);
-            if(findAprilTag(2)){
+            Movement(1.7f, 1.7f, 1.7f, 1.7f, 0,5, 0.5);
+            Movement(1.51f, -1.51f, 1.51f, -1.51f, 0,5, 0.5);
+            Movement(1f, 1f, 1f, 1f,  0,5, 0.5);
+            //if(findAprilTag(2)){
                 placePixelOnBackdrop();
-            }
-            Movement(-0.25f,0.25f,0.25f,-0.25f,0,5,0.5);
+            //}
+            /*Movement(-0.25f,0.25f,0.25f,-0.25f,0,5,0.5);
             if(findAprilTag(2)){
                 placePixelOnBackdrop();
             }
@@ -141,18 +141,18 @@ public class placepixelonbackdrop extends LinearOpMode{
             } else {
                 Movement(0.5f,-0.5f,-0.5f,0.5f,0,5,0.5);
                 Movement(0.5f,0.5f,0.5f,0.5f,0,5,0.5);
-            }
+            }*/
         }
 
         // Save more CPU resources when camera is no longer needed.
         visionPortal.close();
     }
     void placePixelOnBackdrop(){
-        Movement(0,0,0,0,1,5,1);
+        Movement(0,0,0,0,-10,5,1);
         pixelDropper.setPosition(1);
         sleep(500);
         pixelDropper.setPosition(0);
-        Movement(0,0,0,0,-1,5,1);
+        Movement(0,0,0,0,10,5,1);
     }
     private void initAprilTag() {
 
