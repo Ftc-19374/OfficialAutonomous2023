@@ -2,41 +2,29 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.round;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name = "encoder test")
-public class manual_test_encoder extends LinearOpMode {
-    float chassis_speed = 0.5f;
-    //y value of left stick on gamepad1
-    boolean y;
-    //x value of left stick on gamepad1
-    boolean x;
-    //x value of right stick on gamepad1
-    boolean a;
-    boolean b;
-
-    boolean up;
+@Autonomous(name = "park blue (left)")
+public class parkblueleft extends LinearOpMode {
+    //Declare motors and other variables
     DcMotor frontLeft;
     DcMotor frontRight;
     DcMotor backLeft;
     DcMotor backRight;
-
     DcMotor lift;
-
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
-    public void runOpMode(){
-        //access hardware map
-        frontLeft = hardwareMap.get(DcMotor.class, "Fl_motor");
-        frontRight = hardwareMap.get(DcMotor.class, "Fr_motor");
-        backLeft = hardwareMap.get(DcMotor.class, "Bl_motor");
-        backRight = hardwareMap.get(DcMotor.class, "Br_motor");
-        lift = hardwareMap.get(DcMotor.class, "Lift_1");
+    public void runOpMode() throws InterruptedException {
+        frontLeft = hardwareMap.dcMotor.get("Fl_motor");
+        frontRight = hardwareMap.dcMotor.get("Fr_motor");
+        backLeft = hardwareMap.dcMotor.get("Bl_motor");
+        backRight = hardwareMap.dcMotor.get("Br_motor");
+        lift = hardwareMap.dcMotor.get("Lift_1");
 
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -48,34 +36,12 @@ public class manual_test_encoder extends LinearOpMode {
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         waitForStart();
-        while(opModeIsActive()){
-            //get input from joystick(s)
-            y = gamepad1.y;
-            x = gamepad1.x;
-            a = gamepad1.a;
-            b = gamepad1.b;
-            up = gamepad1.dpad_up;
-
-            //Move robot based on mathematical function which is based on input
-            if(y){
-                Movement(384,0,0,0,0,5,0.5);
-            }
-            if(x){
-                Movement(0,384,0,0,0,5,0.5);
-            }
-            if(a){
-                Movement(0,0,384,0,0,5,0.5);
-            }
-            if(b){
-                Movement(0,0,0,384,0,5,0.5);
-            }
-            if(up){
-                Movement(0,0,0,0,-573,5,0.5);
-            }
-        }
+        Park();
     }
+
     void Movement(float fL, float fR, float bL, float bR, float l, int timeoutS, double speed) {
         int ntfl;
         int ntfr;
@@ -85,10 +51,10 @@ public class manual_test_encoder extends LinearOpMode {
 
 
         if(opModeIsActive()){
-            ntfl = frontLeft.getCurrentPosition() + round(fL);
-            ntfr = frontRight.getCurrentPosition() + round(fR);
-            ntbl = backLeft.getCurrentPosition() + round(bL);
-            ntbr = backRight.getCurrentPosition() + round(bR);
+            ntfl = frontLeft.getCurrentPosition() + round(fL*1000);
+            ntfr = frontRight.getCurrentPosition() + round(fR*1000);
+            ntbl = backLeft.getCurrentPosition() + round(bL*1000);
+            ntbr = backRight.getCurrentPosition() + round(bR*1000);
             ntl = lift.getCurrentPosition() + round(l);
             frontLeft.setTargetPosition(ntfl);
             frontRight.setTargetPosition(ntfr);
@@ -133,5 +99,16 @@ public class manual_test_encoder extends LinearOpMode {
             backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+
+    void PlacePixel() {
+        //Move to board using Movement()
+        //Sweep horizontally a specific distance (half the width of the backdrop) until the correct april tag is detected
+        //move corresponding motors to place pixel
+    }
+
+    void Park() {
+        Movement(0.1f,0.1f,0.1f,0.1f,0,5,0.5);
+        Movement(-1.7f,1.7f,1.7f, -1.7f, 0,5, 0.5);
     }
 }

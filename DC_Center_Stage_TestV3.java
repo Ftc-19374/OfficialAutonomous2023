@@ -16,9 +16,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name="DC_Center_Stage_TestV2")
+@TeleOp(name="DC_Center_Stage_TestV3")
 
-public class DC_Center_Stage_TestV2 extends LinearOpMode{
+public class DC_Center_Stage_TestV3 extends LinearOpMode{
     DcMotor Front_Right_Wheel = null; //Dc Motor Variable for Front Right Wheel
     DcMotor Front_Left_Wheel  = null; //Dc Motor Variable for Front Left Wheel
     DcMotor Back_Right_Wheel  = null; //Dc Motor Variable for Back Right Wheel
@@ -86,30 +86,38 @@ public class DC_Center_Stage_TestV2 extends LinearOpMode{
                 Intake_Motor.setPower(IPower);
             }
             //raise and lower the lift to be able to reach higher on the backdrop
-            if (gamepad2.left_trigger >= 0.5 && Lift_Motor.getCurrentPosition() > 0) {
+            if (gamepad2.left_trigger >= 0.5 /*&& Lift_Motor.getCurrentPosition() < 0*/) {
                 //left trigger on gamepad 2 moves the lift down & includes position statements to prevent lift from going too far down
                 LPower = 1;
+                Lift_Motor.setTargetPosition(0);
+                Lift_Motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 Lift_Motor.setPower(LPower);
-            } else if (gamepad2.right_trigger >= 0.5 && Lift_Motor.getCurrentPosition() <= 2950) {
+                sleep(2000);
+                Lift_Motor.setPower(0);
+                Lift_Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            } else if (gamepad2.right_trigger >= 0.5 /*&& Lift_Motor.getCurrentPosition() >= -2950*/) {
                 //right trigger on gamepad 2 moves lift up & includes position statements to prevent lift from going too far up
-            LPower = -1;
-            Lift_Motor.setPower(LPower);
-            }else{
-            Lift_Motor.setPower(0);
+                LPower = -1;
+                Lift_Motor.setTargetPosition(-2950);
+                Lift_Motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                Lift_Motor.setPower(LPower);
+                sleep(2000);
+                Lift_Motor.setPower(0);
+                Lift_Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
 
             //Open and close the box function to drop pixels into backdrop
             if (gamepad2.left_bumper) {
                 //left bumper on gamepad 2 opens the box
-                BPosition = 0.1f;
-                Box_Servo.setPosition(BPosition);
-                sleep(250);
+                BPosition = 1f;
+                Box_Servo.setPosition(0.1);
+
             }
             if (gamepad2.right_bumper) {
                 //right bumper on gamepad 2 closes the box
-               BPosition = 0;
-               Box_Servo.setPosition(BPosition);
+                BPosition = 1;
+                Box_Servo.setPosition(1);
 
             }
             //Launch the drone from the robot using a servo and a motor

@@ -70,12 +70,13 @@ public class placepixelonbackdrop extends LinearOpMode{
         int ntbr;
         int ntl;
 
+
         if(opModeIsActive()){
             ntfl = frontLeft.getCurrentPosition() + round(fL*1000);
             ntfr = frontRight.getCurrentPosition() + round(fR*1000);
             ntbl = backLeft.getCurrentPosition() + round(bL*1000);
             ntbr = backRight.getCurrentPosition() + round(bR*1000);
-            ntl = lift.getCurrentPosition() + round(l*1000);
+            ntl = lift.getCurrentPosition() + round(l);
             frontLeft.setTargetPosition(ntfl);
             frontRight.setTargetPosition(ntfr);
             backLeft.setTargetPosition(ntbl);
@@ -92,16 +93,15 @@ public class placepixelonbackdrop extends LinearOpMode{
             backRight.setPower(speed);
             lift.setPower(speed);
 
-
             runtime.reset();
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (frontLeft.isBusy() && frontRight.isBusy() &&
-                            backLeft.isBusy() && backRight.isBusy())) {
+                    ((frontLeft.isBusy() || frontRight.isBusy() ||
+                            backLeft.isBusy() || backRight.isBusy() || lift.isBusy()))) {
 
                 // Display it for the driver.
-                telemetry.addData("Goal",  "Running to %7d :%7d :%7d :%7d", ntfl,  ntfr, ntbl, ntbr);
-                telemetry.addData("Actual distance moved",  "Running at %7d :%7d :%7d :%7d :%7d" ,
+                telemetry.addData("Goal",  "Running to %7d :%7d :%7d :%7d :%7d", ntfl,  ntfr, ntbl, ntbr, ntl);
+                telemetry.addData("Actual distance moved",  "Running at %7d :%7d :%7d :%7d :%7d",
                         frontLeft.getCurrentPosition(),
                         frontRight.getCurrentPosition(), backLeft.getCurrentPosition(), backRight.getCurrentPosition(), lift.getCurrentPosition());
                 telemetry.addData("Speed", speed);
@@ -148,11 +148,11 @@ public class placepixelonbackdrop extends LinearOpMode{
         visionPortal.close();
     }
     void placePixelOnBackdrop(){
-        Movement(0,0,0,0,-10,5,1);
-        pixelDropper.setPosition(1);
+        Movement(0,0,0,0,-2500,5,1);
+        /*pixelDropper.setPosition(1);
         sleep(500);
         pixelDropper.setPosition(0);
-        Movement(0,0,0,0,10,5,1);
+        Movement(0,0,0,0,1000,5,1);*/
     }
     private void initAprilTag() {
 
