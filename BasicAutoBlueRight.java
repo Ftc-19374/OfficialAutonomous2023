@@ -143,7 +143,7 @@ public class BasicAutoBlueRight extends LinearOpMode {
                 sleep(20);
             }
          */ Movement(1,1,1,1,0,5,0.5);
-            Movement(1f, -1f, 1f, -1f, 0,5, 0.5);
+            Movement(0.85f, -0.85f, 0.85f, -0.85f, 0,5, 0.5);
             while (opModeIsActive() && loopLength > 0) {
                 telemetryTfod();
                 // Push telemetry to the Driver Station.
