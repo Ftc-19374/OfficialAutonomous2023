@@ -16,9 +16,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name="DC_Center_Stage_TestV3")
+@TeleOp(name="DC_Center_StageV4")
 
-public class DC_Center_Stage_TestV3 extends LinearOpMode{
+public class DC_Center_StageV4 extends LinearOpMode{
     DcMotor Front_Right_Wheel = null; //Dc Motor Variable for Front Right Wheel
     DcMotor Front_Left_Wheel  = null; //Dc Motor Variable for Front Left Wheel
     DcMotor Back_Right_Wheel  = null; //Dc Motor Variable for Back Right Wheel
@@ -33,9 +33,10 @@ public class DC_Center_Stage_TestV3 extends LinearOpMode{
     double IPower = 0; //Intake power variable
     float LPower = 0;  //Lift power variable
     float BPosition = 0;  //Box position variable
-    float DroneS = 0; //Servo Power Variable for Drone
-    float DroneM = 0; //Motor Power Variable for Drone
-    float HPower = 0; //Hanging mechanism Power Variable
+    float DroneS = 0; //Servo Power Variable for Drone (Servo)
+    float DroneM = 0; //Motor Power Variable for Drone (Motor)
+    float HPower = 0; //Hanging mechanism Power Variable (Motor)
+    float SHPower = 0f; //hanging mechanism power variable (Servo)
     double Cspeed = 1; //chassis speed variable
     @Override
     public void runOpMode() {
@@ -81,12 +82,12 @@ public class DC_Center_Stage_TestV3 extends LinearOpMode{
             //5th motor controls intake via the left and right bumpers
             // right bumper on gamepad 1 adds power to intake motor to draw in pixels
             if (gamepad1.right_bumper) {
-                IPower = 0.85;  //Starts intake Mechanism; pulls pixels in
+                IPower = 0.75;  //Starts intake Mechanism; pulls pixels in
                 Intake_Motor.setPower(IPower);
             }
             //left bumper on gamepad 1 pushes pixels out to prevent control of too many pixels at once
             else if (gamepad1.left_bumper) {
-                IPower = -1;  //Reverses intake Mechanism; pushes pixels out
+                IPower = -0.75;  //Reverses intake Mechanism; pushes pixels out
                 Intake_Motor.setPower(IPower);
             }
             if (gamepad1.x) {
@@ -113,6 +114,9 @@ public class DC_Center_Stage_TestV3 extends LinearOpMode{
                 sleep(2000);
                 Lift_Motor.setPower(0);
                 Lift_Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            if (gamepad2.y) {
+            Lift_Motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             }
 
 
@@ -145,13 +149,33 @@ public class DC_Center_Stage_TestV3 extends LinearOpMode{
             }
             if (gamepad2.dpad_up) {
                 //Raises the hanging lift using up on the dpad
-                HPower = 0.45f; //Check Speed
+                //Sets power for the hanging motor then sleeps before stopping motor in order to allow it to reach spot
+                //Turns the servo to begin hang
+                HPower = 1.0f; //Check Speed
+                Hang_Motor.setPower(HPower);
+
+
+            }
+            else {
+                HPower =  0;
                 Hang_Motor.setPower(HPower);
             }
-            else if (gamepad2.dpad_down) {
+            if (gamepad2.dpad_down) {
                 //Lowers the Hanging lift using down on the dpad
-                HPower = -0.5f; //Check Speed
+                //Moves hanging servo back and allowed Hanging motor to reverse to lower robot
+                HPower = -0.45f; //Check Speed
                 Hang_Motor.setPower(HPower);
+
+            }
+            else {//if (gamepad2.dpad_down) {
+                HPower = 0;
+                Hang_Motor.setPower(HPower);
+            }
+            if (gamepad2.b) {
+                Hang_Servo.setPosition(1);
+            }
+            if (gamepad2.a) {
+                Hang_Servo.setPosition(0.5);
             }
 
 

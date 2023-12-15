@@ -77,6 +77,8 @@ public class BasicAutoBlueLeft extends LinearOpMode {
     DcMotor backRight;
     DcMotor lift;
     DcMotor intake;
+
+    DcMotor droneLauncher;
     Servo pixelDropper;
     private ElapsedTime runtime = new ElapsedTime();
     // true for webcam, false for phone camera
@@ -107,17 +109,20 @@ public class BasicAutoBlueLeft extends LinearOpMode {
         backRight = hardwareMap.dcMotor.get("Br_motor");
         lift = hardwareMap.dcMotor.get("Lift_1");
         intake = hardwareMap.dcMotor.get("Intake_Motor_1");
+        droneLauncher = hardwareMap.dcMotor.get("");
         pixelDropper = hardwareMap.servo.get("Box_Servo");
 
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        droneLauncher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        droneLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -171,6 +176,7 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                 Movement(-0.1f,-0.1f,-0.1f,-0.1f,0,5,0.5);
                 Movement(0,0,0,0,1800,5,1);
                 Movement(-1,1,1,-1,0,5,0.5);
+                ReverseDrone();
 
             } else{
                 Movement(0.85f,-0.85f,-0.85f,0.85f,0,5,0.5);
@@ -204,6 +210,7 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                     Movement(-0.15f,-0.15f,-0.15f,-0.15f,0,5,0.5);
                     Movement(0,0,0,0,1800,5,1);
                     Movement(-1,1,1,-1,0,5,0.5);
+                    ReverseDrone();
                 } else {
                     Movement(1.52f, -1.52f, 1.52f, -1.52f, 0,5, 0.5);
                     Movement(0.8f,-0.8f,-0.8f,0.8f,0,5,0.5);
@@ -222,6 +229,7 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                     Movement(-0.15f,-0.15f,-0.15f,-0.15f,0,5,0.5);
                     Movement(0,0,0,0,1800,5,1);
                     Movement(-1.5f,1.5f,1.5f,-1.5f,0,5,0.5);
+                    ReverseDrone();
                 }
             }
 
@@ -332,6 +340,29 @@ public class BasicAutoBlueLeft extends LinearOpMode {
             }
         }   // end for() loop
 
-    }   // end method telemetryTfod()
+    }
+    private void ReverseDrone(){
+        droneLauncher.setTargetPosition(-500);
+        droneLauncher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        droneLauncher.setPower(0.25);
+
+        runtime.reset();
+        while (opModeIsActive() &&
+                (runtime.seconds() < 5) &&
+                ((droneLauncher.isBusy()))) {
+
+            // Display it for the driver.
+            telemetry.addData("Goal",  "Running to :%7d", droneLauncher.getTargetPosition());
+            telemetry.addData("Actual distance moved",  "Running at %7d",
+                    droneLauncher.getCurrentPosition());
+            telemetry.addData("Speed", droneLauncher.getPower());
+            telemetry.update();
+        }
+
+
+        droneLauncher.setPower(0);
+        droneLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }// end method telemetryTfod()
 
 }   // end class
