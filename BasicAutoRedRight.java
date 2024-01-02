@@ -50,6 +50,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.List;
@@ -61,10 +62,13 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Blue Left OFFICIAL")
-public class BasicAutoBlueLeft extends LinearOpMode {
-
+@Autonomous(name = "Red Right OFFICIAL")
+public class BasicAutoRedRight extends LinearOpMode {
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+    //String for position
+
+
+    // true for webcam, false for phone camera
 
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
@@ -152,12 +156,9 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                 // Share the CPU.
                 sleep(20);
             }
-
-         */
-
-            Movement(1,1,1,1,0,5,0.5);
+         */ Movement(1,1,1,1,0,5,0.5);
             ReverseDrone();
-            Movement(-0.85f, 0.85f, 0.85f, -0.85f, 0,5, 0.5);
+            Movement(0.80f, -0.80f, -0.80f, 0.80f, 0,5, 0.5);
             while (opModeIsActive() && loopLength > 0) {
                 telemetryTfod();
                 // Push telemetry to the Driver Station.
@@ -173,22 +174,22 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                 sleep(2000);
                 intake.setPower(0);
                 Movement(1,1,1,1,0,5,1);
-                Movement(1.515f, -1.515f, 1.515f, -1.515f, 0,5, 0.5);
+                Movement(-1.515f, 1.515f, -1.515f, 1.515f, 0,5, 0.5);
                 Movement(1.75f,1.75f,1.75f,1.75f,0,5,0.5);
-                Movement(-2.6f,2.6f,2.6f,-2.6f,0,5,0.75);
-                Movement(0.1f,0.1f,0.1f,0.1f,0,5,0.5);
+                Movement(2.6f,-2.6f,-2.6f,2.6f,0,5,0.75);
+                Movement(0.35f,0.35f,0.35f,0.35f,0,5,0.5);
                 //insert placement here
                 Movement(0,0,0,0,-1800,5,1);
                 pixelDropper.setPosition(0.5);
                 sleep(1000);
                 pixelDropper.setPosition(1);
                 sleep(200);
-                Movement(-0.1f,-0.1f,-0.1f,-0.1f,0,5,0.5);
+                Movement(-0.35f,-0.35f,-0.35f,-0.35f,0,5,0.5);
                 Movement(0,0,0,0,900,5,1);
-                Movement(-1,1,1,-1,0,5,1);
+                Movement(1,-1,-1,1,0,5,1);
 
             } else{
-                Movement(0.85f,-0.85f,-0.85f,0.85f,0,5,0.5);
+                Movement(-0.85f,0.85f,0.85f,-0.85f,0,5,0.5);
                 Movement(0.3f,0.3f,0.3f,0.3f,0,5,0.5);
                 loopLength = 100;
                 while (opModeIsActive() && loopLength > 0) {
@@ -206,9 +207,9 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                     sleep(2000);
                     intake.setPower(0);
                     Movement(0.5f,0.5f,0.5f,0.5f,0,5,0.5);
-                    Movement(1.515f, -1.515f, 1.515f, -1.515f, 0,5, 0.5);
+                    Movement(-1.515f, 1.515f, -1.515f, 1.515f, 0,5, 0.5);
                     Movement(2.5f,2.5f,2.5f,2.5f,0,5,1);
-                    Movement(-2.5f,2.5f,2.5f,-2.5f,0,5,1);
+                    Movement(2.5f,-2.5f,-2.5f,2.5f,0,5,1);
                     Movement(0.1f,0.1f,0.1f,0.1f,0,5,0.5);
                     //insert placement here
                     Movement(0,0,0,0,-1800,5,1);
@@ -218,17 +219,17 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                     sleep(200);
                     Movement(0,0,0,0,900,5,1);
                     Movement(-0.1f,-0.1f,-0.1f,-0.1f,0,5,0.5);
-                    Movement(-1,1,1,-1,0,5,1);
+                    Movement(1,-1,-1,1,0,5,1);
                 } else {
-                    Movement(-0.15f,0.15f,0.15f,-0.15f,0,5,0.5);
-                    Movement(1.525f, -1.525f, 1.525f, -1.525f, 0,5, 0.5);
-                    Movement(0.8f,-0.8f,-0.8f,0.8f,0,5,0.5);
+                    Movement(0.15f,-0.15f,-0.15f,0.15f,0,5,0.5);
+                    Movement(-1.525f, 1.525f, -1.525f, 1.525f, 0,5, 0.5);
+                    Movement(-0.8f,0.8f,0.8f,-0.8f,0,5,0.5);
                     Movement(0.05f,0.05f,0.05f,0.05f,0,5,0.5);
                     intake.setPower(-0.35);
                     sleep(2000);
                     intake.setPower(0);
                     Movement(2.45f,2.45f,2.45f,2.45f,0,5,1);
-                    Movement(-0.1f, 0.1f, 0.1f, -0.1f, 0,5, 0.5);
+                    Movement(0.1f, -0.1f, -0.1f, 0.1f, 0,5, 0.5);
                     Movement(0.15f,0.15f,0.15f,0.15f,0,5,0.5);
                     Movement(0,0,0,0,-1800,5,1);
                     pixelDropper.setPosition(0.5);
@@ -237,7 +238,7 @@ public class BasicAutoBlueLeft extends LinearOpMode {
                     sleep(200);
                     Movement(0,0,0,0,900,5,1);
                     Movement(-0.15f,-0.15f,-0.15f,-0.15f,0,5,0.5);
-                    Movement(-1.5f,1.5f,1.5f,-1.5f,0,5,1);
+                    Movement(1.5f,-1.5f,-1.5f,1.5f,0,5,1);
                 }
             }
 
@@ -344,7 +345,7 @@ public class BasicAutoBlueLeft extends LinearOpMode {
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
             if(recognition.getLabel() == "Pixel"){
-              objectDetected = true;
+                objectDetected = true;
             }
         }   // end for() loop
 
@@ -372,7 +373,6 @@ public class BasicAutoBlueLeft extends LinearOpMode {
         droneLauncher.setPower(0);
         droneLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }// end method telemetryTfod()
-
 
 
 }   // end class

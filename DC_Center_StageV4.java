@@ -136,7 +136,7 @@ public class DC_Center_StageV4 extends LinearOpMode{
             //Launch the drone from the robot using a servo and a motor
             if (gamepad2.dpad_right) {
                 //launches drone when pressed using the right dpad
-                DroneM = 0.5f;
+                DroneM = 0.6f;
                 Drone_Motor.setPower(DroneM);
                 sleep(300);
                 DroneS = 1;
@@ -146,6 +146,13 @@ public class DC_Center_StageV4 extends LinearOpMode{
                 DroneS = 0;
                 Drone_Motor.setPower(DroneM);
                 Drone_Servo.setPower(DroneS);
+            }
+            if (gamepad2.dpad_left) {
+                DroneM = -0.1f;
+                Drone_Motor.setPower(DroneM);
+                sleep(300);
+                DroneM = 0;
+                Drone_Motor.setPower(DroneM);
             }
             if (gamepad2.dpad_up) {
                 //Raises the hanging lift using up on the dpad

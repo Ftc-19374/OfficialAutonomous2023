@@ -46,6 +46,14 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.List;
 
@@ -60,7 +68,8 @@ import java.util.List;
 public class BasicAutoRedLeft extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
+    //String for position
+     // height of wanted camera resolution
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
@@ -78,6 +87,7 @@ public class BasicAutoRedLeft extends LinearOpMode {
     DcMotor lift;
     DcMotor intake;
     Servo pixelDropper;
+    DcMotor droneLauncher;
     private ElapsedTime runtime = new ElapsedTime();
     // true for webcam, false for phone camera
 
@@ -108,16 +118,19 @@ public class BasicAutoRedLeft extends LinearOpMode {
         lift = hardwareMap.dcMotor.get("Lift_1");
         intake = hardwareMap.dcMotor.get("Intake_Motor_1");
         pixelDropper = hardwareMap.servo.get("Box_Servo");
+        droneLauncher = hardwareMap.dcMotor.get("Drone_Motor");
 
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        droneLauncher.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        droneLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -143,6 +156,8 @@ public class BasicAutoRedLeft extends LinearOpMode {
                 sleep(20);
             }
          */ Movement(1,1,1,1,0,5,0.5);
+         ReverseDrone();
+            Movement(-0.80f, 0.80f, 0.80f, -0.80f, 0,5, 0.5);
             while (opModeIsActive() && loopLength > 0) {
                 telemetryTfod();
                 // Push telemetry to the Driver Station.
@@ -158,22 +173,16 @@ public class BasicAutoRedLeft extends LinearOpMode {
                 sleep(2000);
                 intake.setPower(0);
                 Movement(1,1,1,1,0,5,0.5);
-                Movement(-1.515f, 1.515f, -1.515f, 1.515f, 0,5, 0.5);
+                //Movement(7.5f,-7.5f,-7.5f,7.5f,0,5,1);
+                /*Movement(1.515f, -1.515f, 1.515f, -1.515f, 0,5, 0.5);
                 Movement(1.75f,1.75f,1.75f,1.75f,0,5,0.5);
-                Movement(2.6f,-2.6f,-2.6f,2.6f,0,5,0.5);
-                Movement(0.1f,0.1f,0.1f,0.1f,0,5,0.5);
+                Movement(-2.6f,2.6f,2.6f,-2.6f,0,5,0.5);
+                Movement(0.1f,0.1f,0.1f,0.1f,0,5,0.5);*/
                 //insert placement here
-                Movement(0,0,0,0,-1800,5,1);
-                pixelDropper.setPosition(0.5);
-                sleep(1000);
-                pixelDropper.setPosition(1);
-                sleep(200);
-                Movement(-0.1f,-0.1f,-0.1f,-0.1f,0,5,0.5);
-                Movement(0,0,0,0,1800,5,1);
-                Movement(1,-1,-1,1,0,5,0.5);
+
 
             } else{
-                Movement(-0.85f,0.85f,0.85f,-0.85f,0,5,0.5);
+                Movement(0.85f,-0.85f,-0.85f,0.85f,0,5,0.5);
                 Movement(0.3f,0.3f,0.3f,0.3f,0,5,0.5);
                 loopLength = 100;
                 while (opModeIsActive() && loopLength > 0) {
@@ -190,10 +199,11 @@ public class BasicAutoRedLeft extends LinearOpMode {
                     intake.setPower(-0.35);
                     sleep(2000);
                     intake.setPower(0);
-                    Movement(0.5f,0.5f,0.5f,0.5f,0,5,0.5);
-                    Movement(-1.52f, 1.52f, -1.52f, 1.52f, 0,5, 0.5);
+                    Movement(0.35f,0.35f,0.35f,0.35f,0,5,0.5);
+                    //Movement(6.5f,-6.5f,-6.5f,6.5f,0,5,1);
+                    /*Movement(1.52f, -1.52f, 1.52f, -1.52f, 0,5, 0.5);
                     Movement(2.5f,2.5f,2.5f,2.5f,0,5,0.5);
-                    Movement(2.5f,-2.5f,-2.5f,2.5f,0,5,0.5);
+                    Movement(-2.5f,2.5f,2.5f,-2.5f,0,5,0.5);
                     Movement(0.15f,0.15f,0.15f,0.15f,0,5,0.5);
                     //insert placement here
                     Movement(0,0,0,0,-1800,5,1);
@@ -203,15 +213,19 @@ public class BasicAutoRedLeft extends LinearOpMode {
                     sleep(200);
                     Movement(-0.15f,-0.15f,-0.15f,-0.15f,0,5,0.5);
                     Movement(0,0,0,0,1800,5,1);
-                    Movement(1,-1,-1,1,0,5,0.5);
+                    Movement(-1,1,1,-1,0,5,0.5);*/
                 } else {
-                    Movement(-1.52f, 1.52f, -1.52f, 1.52f, 0,5, 0.5);
-                    Movement(-0.8f,0.8f,0.8f,-0.8f,0,5,0.5);
-                    Movement(0.2f,0.2f,0.2f,0.2f,0,5,0.5);
+                    Movement(-0.15f,0.15f,0.15f,-0.15f,0,5,0.5);
+                    Movement(1.525f, -1.525f, 1.525f, -1.525f, 0,5, 0.5);
+                    Movement(0.8f,-0.8f,-0.8f,0.8f,0,5,0.5);
+                    Movement(0.05f,0.05f,0.05f,0.05f,0,5,0.5);
                     intake.setPower(-0.35);
                     sleep(2000);
                     intake.setPower(0);
-                    Movement(2f,2f,2f,2f,0,5,0.5);
+                    Movement(1.6f,-1.6f,-1.6f,1.6f,0,5,0.5);
+                    //Movement(-5.5f,-5.5f,-5.5f,-5.5f,0,5,1);
+
+                    /*Movement(2f,2f,2f,2f,0,5,0.5);
                     Movement(0.3f, -0.3f, 0.3f, -0.3f, 0,5, 0.5);
                     Movement(0.1f,0.1f,0.1f,0.1f,0,5,0.5);
                     Movement(0,0,0,0,-1800,5,1);
@@ -221,7 +235,7 @@ public class BasicAutoRedLeft extends LinearOpMode {
                     sleep(200);
                     Movement(-0.15f,-0.15f,-0.15f,-0.15f,0,5,0.5);
                     Movement(0,0,0,0,1800,5,1);
-                    Movement(-1.5f,1.5f,1.5f,-1.5f,0,5,0.5);
+                    Movement(-1.5f,1.5f,1.5f,-1.5f,0,5,0.5);*/
                 }
             }
 
@@ -333,5 +347,30 @@ public class BasicAutoRedLeft extends LinearOpMode {
         }   // end for() loop
 
     }   // end method telemetryTfod()
+    private void ReverseDrone(){
+        droneLauncher.setTargetPosition(-250);
+        droneLauncher.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        droneLauncher.setPower(0.05);
+
+        runtime.reset();
+        while (opModeIsActive() &&
+                (runtime.seconds() < 5) &&
+                ((droneLauncher.isBusy()))) {
+
+            // Display it for the driver.
+            telemetry.addData("Goal",  "Running to :%7d", droneLauncher.getTargetPosition());
+            telemetry.addData("Actual distance moved",  "Running at %7d",
+                    droneLauncher.getCurrentPosition());
+            telemetry.addData("Speed", droneLauncher.getPower());
+            telemetry.update();
+        }
+
+
+        droneLauncher.setPower(0);
+        droneLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }// end method telemetryTfod()
+
+
 
 }   // end class
